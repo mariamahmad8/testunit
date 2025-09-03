@@ -253,7 +253,7 @@ class GoodmemVectorStore(VectorStore):
         for t, m, ext in zip(texts, metas, ext_ids):
             req = MemoryCreationRequest(
                 space_id=self._space_id,             
-                original_content=t.encode("utf-8"),
+                original_content=t,
                 content_type="text/plain",
                 metadata=m,
                 external_id=ext,                
@@ -342,7 +342,7 @@ class GoodmemVectorStore(VectorStore):
     ) -> List[Document]:
         retrieve_request = RetrieveMemoryRequest(
             message=query,
-            space_ids=[{"space_id": self._space_id}], #shoudl be passed in through constructor/init
+            space_keys=[{"space_id": self._space_id}], #shoudl be passed in through constructor/init
             requested_size=k,
             fetch_memory=True,
             fetch_memory_content=True
@@ -381,7 +381,7 @@ class GoodmemVectorStore(VectorStore):
     ) -> List[Tuple[Document, float]]:
         retrieve_request = RetrieveMemoryRequest(
             message=query,
-            space_ids=[{"space_id": self._space_id}],
+            space_keys=[{"space_id": self._space_id}],
             requested_size=k,
             fetch_memory=True,
             fetch_memory_content=True

@@ -1,7 +1,8 @@
-  import pytest
-  from unittest.mock import Mock, patch
-  from langchain_core.documents import Document
-  from langchain_goodmem.vectorstores import GoodmemVectorStore
+import pytest
+from unittest.mock import Mock, patch
+from langchain_core.documents import Document
+from langchain_goodmem.vectorstores import GoodmemVectorStore
+
 document_1 = Document(
     page_content="I had chocalate chip pancakes and scrambled eggs for breakfast this morning.",
     metadata={"source": "tweet"},
@@ -29,10 +30,21 @@ def test_add_documents():
            patch('langchain_goodmem.vectorstores.SpacesApi'), \
            patch('langchain_goodmem.vectorstores.ApiClient'), \
            patch('langchain_goodmem.vectorstores.Configuration'):
+        
         vector_store = GoodmemVectorStore(
-        space_id="test-space",
-        api_key="test-key"
+            space_id="test-space",
+            api_key="test-key"
         )
+        
+        mock_memories_instance = mock_memories_api.return_value
+        mock_batch_response = Mock()
+        mock_batch_response.results = [
+            Mock(memory_id="1"),
+            Mock(memory_id="2"), 
+            Mock(memory_id="3")
+        ]
+        mock_memories_instance.batch_create_memory.return_value = mock_batch_response
+        
         result = vector_store.add_documents(documents=documents, ids=["1", "2", "3"])
         assert result == ["1", "2", "3"]
 
